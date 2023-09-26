@@ -22,7 +22,10 @@ print(current_directory)
 PATH = r'/Users/hillarywolff/documents/github/detroittigersanalytics/'
 df = pd.read_csv(PATH+'AnalyticsQuestionnairePitchData.csv')
 
-print(df.columns.tolist())
+
+
+#_____________________________________________________________________________
+
 
 # histogram of pitch types
 pitch_type_counts = df['PitchType'].value_counts()
@@ -52,8 +55,8 @@ plt.ylabel('Release Speed')
 plt.title('Release Speed Distribution in Two Games')
 plt.show()
 
-# scatter plot of release angle vs release spin rate
 
+# scatter plot of release angle vs release spin rate
 x = df['ReleaseAngle']
 y = df['ReleaseSpinRate']
 
@@ -61,12 +64,11 @@ sns.regplot(x=x, y=y, line_kws={'color':'red'}, scatter_kws={"alpha":0.5})
 
 plt.xlabel('Release Angle')
 plt.ylabel('Release Spin Rate')
-plt.title('Release Angle vs. Release Spin Rate with Trend Line')
+plt.title('Release Angle vs. Release Spin Rate')
 plt.show()
 
 
 # pitch type pie chart
-
 pitch_type_counts = df['PitchType'].value_counts()
 
 plt.figure(figsize=(8, 8))
@@ -78,7 +80,6 @@ plt.title('Pitch Type Distribution')
 plt.show()
 
 # strike zone heatmap
-
 x = df['TrajectoryLocationX']
 z = df['TrajectoryLocationZ']
 strike_zone_top = df['StrikeZoneTop']
@@ -101,13 +102,13 @@ plt.title('Strike Zone Heatmap')
 
 sm = plt.cm.ScalarMappable(cmap='coolwarm')
 sm.set_array([])
-plt.colorbar(sm, label='Density')
+plt.colorbar(sm, label='Probability')
 
 plt.show()
 
-
 # game comparison tables
 
+#balls and strikes by pitcher by game
 summary_table = df.groupby(['GamePk', 'PitcherId']).agg({
     'Balls': 'sum',
     'Strikes': 'sum'
@@ -115,13 +116,19 @@ summary_table = df.groupby(['GamePk', 'PitcherId']).agg({
 print(summary_table)
 
 
-
+# count of pitch type and call combinations by pitcher by game
 pitch_stats_counts = df[['GamePk', 'PitcherId', 'PitchType', 
                          'PitchCall']].value_counts().reset_index()
 print(pitch_stats_counts)
 
 
-
+# count of pitch type, pitch calls by batter side by inning by pitcher by game
+bat_stats_counts = df[['GamePk', 'PitcherId', 'PitchType', 
+                         'PitchCall', 'BatterSide', 
+                         'Inning']].value_counts().reset_index().sort_values(['GamePk', 'PitcherId'])
+bat_stats_counts.columns = ['GamePk', 'PitcherId', 'PitchType', 'PitchCall', 
+                            'BatterSide', 'Inning', 'Count']
+print(bat_stats_counts)
 
 
 
