@@ -28,31 +28,50 @@ df = pd.read_csv(PATH+'AnalyticsQuestionnairePitchData.csv')
 
 
 # histogram of pitch types
-pitch_type_counts = df['PitchType'].value_counts()
+plt.figure(figsize=(16, 8))  
+plt.subplots_adjust(right=0.7)
+pitch_counts_by_pitcher = df.groupby(['PitcherId', 'PitchType']).size().reset_index(name = 'PitchCount')
+for pitcher_id in pitch_counts_by_pitcher['PitcherId'].unique():
+    pitcher_data = pitch_counts_by_pitcher[pitch_counts_by_pitcher['PitcherId'] == pitcher_id]
+    plt.bar(pitcher_data['PitchType'], pitcher_data['PitchCount'], label=f'Pitcher {pitcher_id}')
 
-plt.bar(pitch_type_counts.index, pitch_type_counts.values)
 plt.xlabel('Pitch Type')
-plt.ylabel('Frequency')
-plt.title('Distribution of Pitch Types')
+plt.ylabel('Pitch Count')
+plt.title('Pitch Type Histogram for All Pitchers')
 plt.xticks(rotation=45)
+plt.legend(fontsize='small', bbox_to_anchor = (1.05, 1), loc='upper right')
+plt.tight_layout()
 plt.show()
 
 
 # barchart of pitch calls
-pitch_call_counts = df['PitchCall'].value_counts()
+plt.figure(figsize=(16, 8))  
+plt.subplots_adjust(right=0.7)
+pitch_counts_by_pitcher = df.groupby(['PitcherId', 'PitchCall']).size().reset_index(name = 'PitchCallCount')
+for pitcher_id in pitch_counts_by_pitcher['PitcherId'].unique():
+    pitcher_data = pitch_counts_by_pitcher[pitch_counts_by_pitcher['PitcherId'] == pitcher_id]
+    plt.bar(pitcher_data['PitchCall'], pitcher_data['PitchCallCount'], label=f'Pitcher {pitcher_id}')
 
-plt.bar(pitch_call_counts.index, pitch_call_counts.values)
 plt.xlabel('Pitch Call')
 plt.ylabel('Frequency')
 plt.title('Frequency of Pitch Calls')
 plt.xticks(rotation=90)
+plt.legend(fontsize='small', bbox_to_anchor = (1.05, 1), loc='upper right')
 plt.show()
 
-#box plot of release speed
+#box plot of release speed between pitchers
+sns.boxplot(x='PitcherId', y='ReleaseSpeed', data=df)
+plt.xlabel('PitcherId')
+plt.ylabel('Release Speed')
+plt.title('Release Speed Distribution Between Pitchers')
+plt.show()
+
+
+# box plot of release speed between games
 sns.boxplot(x='GamePk', y='ReleaseSpeed', data=df)
 plt.xlabel('Game')
 plt.ylabel('Release Speed')
-plt.title('Release Speed Distribution in Two Games')
+plt.title('Release Speed Distribution Between Games')
 plt.show()
 
 
